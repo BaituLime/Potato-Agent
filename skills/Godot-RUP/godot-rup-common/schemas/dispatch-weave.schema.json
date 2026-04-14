@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/dispatch-weave.schema.json",
+  "title": "Godot-RUP Dispatch Weave",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dispatch_weave_format",
+    "run_id",
+    "objective",
+    "weave_policy",
+    "epochs",
+    "peak_worker_slots_required",
+    "integration_slots_required",
+    "weave_decisions"
+  ],
+  "properties": {
+    "dispatch_weave_format": {
+      "type": "string",
+      "const": "godot_dispatch_weave/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "weave_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layer_granularity",
+        "allow_partial_epoch_admission",
+        "optimization_objective"
+      ],
+      "properties": {
+        "layer_granularity": {
+          "type": "string",
+          "const": "whole_layer_only"
+        },
+        "allow_partial_epoch_admission": {
+          "type": "boolean",
+          "const": false
+        },
+        "optimization_objective": {
+          "type": "string",
+          "const": "minimize_peak_worker_slots_times_combined_topo_height"
+        }
+      }
+    },
+    "epochs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "combined_layer_ids",
+          "admitted_scope_ids",
+          "admitted_writer_scope_ids",
+          "worker_slots_required",
+          "module_integration_reservations",
+          "admission_mode"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "combined_layer_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "admitted_scope_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": ".+::.+"
+            },
+            "minItems": 1
+          },
+          "admitted_writer_scope_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": ".+::.+"
+            }
+          },
+          "worker_slots_required": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "module_integration_reservations": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "admission_mode": {
+            "type": "string",
+            "const": "full_layer"
+          }
+        }
+      }
+    },
+    "peak_worker_slots_required": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "integration_slots_required": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "weave_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module_id",
+          "source_layer_id",
+          "woven_after",
+          "reason"
+        ],
+        "properties": {
+          "module_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_layer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "woven_after": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

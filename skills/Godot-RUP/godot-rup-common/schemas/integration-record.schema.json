@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/integration-record.schema.json",
+  "title": "Godot-RUP Layer Integration Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "integration_record_format",
+    "run_id",
+    "module_id",
+    "layer_id",
+    "integration_id",
+    "integration_checkout",
+    "integration_branch",
+    "source_scope_ids",
+    "source_worker_slots",
+    "git_action",
+    "result",
+    "result_commit",
+    "recycled_worker_slots",
+    "first_blocker",
+    "notes"
+  ],
+  "properties": {
+    "integration_record_format": {
+      "type": "string",
+      "const": "godot_integration_record/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "layer_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integration_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integration_checkout": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integration_branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_scope_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "source_worker_slots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "git_action": {
+      "type": "string",
+      "enum": [
+        "merge",
+        "cherry_pick",
+        "fast_forward",
+        "other"
+      ]
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "integrated",
+        "blocked"
+      ]
+    },
+    "result_commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recycled_worker_slots": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "first_blocker": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

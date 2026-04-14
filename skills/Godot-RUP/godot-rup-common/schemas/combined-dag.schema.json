@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/combined-dag.schema.json",
+  "title": "Godot-RUP Combined Runtime DAG",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "combined_dag_format",
+    "run_id",
+    "modules",
+    "nodes",
+    "combined_layers"
+  ],
+  "properties": {
+    "combined_dag_format": {
+      "type": "string",
+      "const": "godot_combined_runtime_dag/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "module_id",
+          "scope_id",
+          "scope_kind",
+          "graph_kind",
+          "source_layer_id",
+          "depends_on",
+          "model_tier",
+          "reasoningEffort",
+          "ownership_boundary",
+          "checks_required",
+          "resources_required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": ".+::.+"
+          },
+          "module_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope_kind": {
+            "type": "string",
+            "enum": [
+              "task",
+              "craft",
+              "proof",
+              "review"
+            ],
+            "description": "Runtime scope discriminator derived from graph semantics; not part of the planning dispatch pair."
+          },
+          "graph_kind": {
+            "type": "string",
+            "enum": [
+              "craft",
+              "execution",
+              "proof",
+              "review"
+            ]
+          },
+          "source_layer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": ".+::.+"
+            }
+          },
+          "model_tier": {
+            "type": "string",
+            "enum": [
+              "full",
+              "mini"
+            ],
+            "description": "First half of the planning-owned dispatch pair carried into runtime."
+          },
+          "reasoningEffort": {
+            "type": "string",
+            "enum": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "description": "Second half of the planning-owned dispatch pair carried into runtime."
+          },
+          "ownership_boundary": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "checks_required": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "resources_required": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "combined_layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "ordered_index",
+          "source_layer_ids",
+          "admitted_scope_ids"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ordered_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source_layer_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": ".+::.+"
+            },
+            "minItems": 1
+          },
+          "admitted_scope_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": ".+::.+"
+            },
+            "minItems": 1
+          }
+        }
+      }
+    }
+  }
+}

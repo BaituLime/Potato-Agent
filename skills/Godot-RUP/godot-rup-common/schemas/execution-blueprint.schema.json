@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/execution-blueprint.schema.json",
+  "title": "Godot-RUP Execution Blueprint Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "execution_blueprint_index_format",
+    "module_id",
+    "blueprint_revision_id",
+    "supersedes_blueprint_revision_id",
+    "decision_path",
+    "authoritative_markdown_path",
+    "key_use_cases",
+    "shared_route_decisions",
+    "realizations",
+    "out_of_scope_ids",
+    "open_question_ids",
+    "notes"
+  ],
+  "properties": {
+    "execution_blueprint_index_format": {
+      "type": "string",
+      "const": "godot_execution_blueprint_index/v1"
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "blueprint_revision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "supersedes_blueprint_revision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "use_case_design_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_use_case_design_revision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authoritative_markdown_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "key_use_cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "use_case_id",
+          "heading",
+          "label"
+        ],
+        "properties": {
+          "use_case_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "heading": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "shared_route_decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "decision_id",
+          "heading",
+          "summary"
+        ],
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "heading": {
+            "type": "string",
+            "minLength": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "realizations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "realization_id",
+          "heading",
+          "label",
+          "serves_use_case_ids",
+          "depends_on_realization_ids",
+          "parallel_with_realization_ids",
+          "converges_into_realization_ids"
+        ],
+        "properties": {
+          "realization_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "heading": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "serves_use_case_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "depends_on_realization_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "parallel_with_realization_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "converges_into_realization_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "out_of_scope_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "open_question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

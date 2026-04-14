@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/session.schema.json",
+  "title": "Godot-RUP Run Session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_format",
+    "run_id",
+    "lineage_run_id",
+    "previous_run_id",
+    "handoff_root",
+    "requested_modules",
+    "invocation",
+    "current_phase",
+    "yield_reason",
+    "stop_reason",
+    "stop_scope",
+    "environment_blocker",
+    "active_epoch_ids",
+    "notes"
+  ],
+  "properties": {
+    "session_format": {
+      "type": "string",
+      "const": "godot_run_session/v4"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lineage_run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "handoff_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_modules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entry_surface",
+        "mode",
+        "parent_model",
+        "started_at"
+      ],
+      "properties": {
+        "entry_surface": {
+          "type": "string",
+          "enum": [
+            "godot-rup-runner",
+            "godot-rup-step",
+            "godot-rup-acceptor"
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "execution",
+            "acceptance"
+          ]
+        },
+        "parent_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "started_at": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "current_phase": {
+      "type": "string",
+      "enum": [
+        "composing_runtime_dag",
+        "allocating_worktrees",
+        "orchestrating",
+        "acceptance",
+        "stopped"
+      ]
+    },
+    "yield_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "dispatch_refresh_needed"
+      ]
+    },
+    "continue_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "continue_normal",
+        "continue_level1_repair",
+        "continue_level2_graph_continuation"
+      ]
+    },
+    "resume_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "resume_after_manual",
+        "resume_after_delta",
+        "resume_after_legal_stop"
+      ]
+    },
+    "stop_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "manual_needed",
+        "replan_needed",
+        "ready_for_acceptance",
+        "global_blocked",
+        "all_done"
+      ]
+    },
+    "stop_scope": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "environment_blocker": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "active_epoch_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "current_phase": {
+            "const": "stopped"
+          }
+        },
+        "required": [
+          "current_phase"
+        ]
+      },
+      "then": {
+        "properties": {
+          "yield_reason": {
+            "const": null
+          },
+          "continue_reason": {
+            "const": null
+          },
+          "stop_reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "current_phase": {
+            "enum": [
+              "composing_runtime_dag",
+              "allocating_worktrees",
+              "orchestrating",
+              "acceptance"
+            ]
+          }
+        },
+        "required": [
+          "current_phase"
+        ]
+      },
+      "then": {
+        "properties": {
+          "stop_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "current_phase": {
+            "enum": [
+              "composing_runtime_dag",
+              "allocating_worktrees",
+              "acceptance",
+              "stopped"
+            ]
+          }
+        },
+        "required": [
+          "current_phase"
+        ]
+      },
+      "then": {
+        "properties": {
+          "yield_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "yield_reason": {
+            "const": "dispatch_refresh_needed"
+          }
+        },
+        "required": [
+          "yield_reason"
+        ]
+      },
+      "then": {
+        "properties": {
+          "current_phase": {
+            "const": "orchestrating"
+          },
+          "stop_reason": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stop_reason": {
+            "const": "all_done"
+          }
+        },
+        "required": [
+          "stop_reason"
+        ]
+      },
+      "then": {
+        "properties": {
+          "current_phase": {
+            "const": "stopped"
+          }
+        }
+      }
+    }
+  ]
+}

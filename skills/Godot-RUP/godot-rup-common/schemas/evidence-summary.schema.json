@@ -1,0 +1,914 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/evidence-summary.schema.json",
+  "title": "Godot-RUP Evidence Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "summary_format",
+    "module_id",
+    "scope_id",
+    "kind",
+    "status",
+    "outcome",
+    "checks_run",
+    "mcp_used",
+    "headless_used",
+    "proofs",
+    "artifacts",
+    "notes",
+    "first_blocker"
+  ],
+  "properties": {
+    "summary_format": {
+      "type": "string",
+      "const": "godot_evidence_summary/v4"
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "craft",
+        "execution",
+        "proof",
+        "review",
+        "layer",
+        "acceptance"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "blocked"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "done",
+        "rework_needed",
+        "manual_needed",
+        "replan_needed"
+      ]
+    },
+    "completion_quality": {
+      "type": "string",
+      "enum": [
+        "exact",
+        "partial",
+        "failed"
+      ]
+    },
+    "task_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "module_id",
+        "task_id",
+        "kind"
+      ],
+      "properties": {
+        "module_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "branch": {
+          "type": "string"
+        },
+        "slot": {
+          "type": "string"
+        },
+        "checkout": {
+          "type": "string"
+        }
+      }
+    },
+    "reviewed_task_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "module_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "layer_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layer_id"
+      ],
+      "properties": {
+        "layer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "module_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "checks_run": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "status"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed"
+            ]
+          },
+          "command": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mcp_used": {
+      "type": "boolean"
+    },
+    "headless_used": {
+      "type": "boolean"
+    },
+    "checkout_kind": {
+      "type": "string",
+      "enum": [
+        "integration",
+        "worker",
+        "acceptance",
+        "other"
+      ]
+    },
+    "proofs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "proof_id",
+          "proof_type",
+          "subject",
+          "proof_rigor",
+          "verdict"
+        ],
+        "properties": {
+          "proof_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proof_type": {
+            "type": "string",
+            "enum": [
+              "compile",
+              "headless",
+              "snapshot_round_trip",
+              "scene_structure_proof",
+              "behavior_proof",
+              "code_inspection",
+              "data_migration_proof",
+              "dispatch_audit",
+              "resource_bootstrap_proof",
+              "other"
+            ]
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1
+          },
+          "proof_rigor": {
+            "type": "string",
+            "enum": [
+              "smoke",
+              "strict"
+            ],
+            "description": "Evidence strength. smoke = sanity only; strict = full required rigor for the claim."
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dispatch_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requested_model_tier",
+        "requested_reasoningEffort",
+        "resolved_model",
+        "actual_model",
+        "resolved_subagent_type",
+        "actual_subagent_type",
+        "resolved_reasoningEffort",
+        "producer_command",
+        "dispatch_mode",
+        "dispatch_verified"
+      ],
+      "properties": {
+        "requested_model_tier": {
+          "type": "string",
+          "enum": [
+            "full",
+            "mini"
+          ]
+        },
+        "requested_reasoningEffort": {
+          "type": "string",
+          "enum": [
+            "medium",
+            "high",
+            "xhigh"
+          ]
+        },
+        "resolved_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actual_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resolved_subagent_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actual_subagent_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resolved_reasoningEffort": {
+          "type": "string",
+          "enum": [
+            "medium",
+            "high",
+            "xhigh"
+          ]
+        },
+        "producer_command": {
+          "type": "string",
+          "enum": [
+            "godot-rup-task",
+            "godot-rup-craft",
+            "godot-rup-proof",
+            "godot-rup-review"
+          ]
+        },
+        "dispatch_mode": {
+          "type": "string",
+          "const": "opencode_native_child"
+        },
+        "dispatch_verified": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "acceptance_inputs_checked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input_id",
+          "coverage"
+        ],
+        "properties": {
+          "input_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "coverage": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "partial",
+              "missing"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "covered_scope_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "checklist_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "evidence_id",
+          "description",
+          "expected_proof_type",
+          "expected_proof_rigor",
+          "pass_criterion",
+          "result",
+          "evidence_scope_ids",
+          "cited_evidence_paths"
+        ],
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_proof_type": {
+            "type": "string",
+            "enum": [
+              "compile",
+              "headless",
+              "snapshot_round_trip",
+              "scene_structure_proof",
+              "behavior_proof",
+              "code_inspection",
+              "data_migration_proof",
+              "dispatch_audit",
+              "resource_bootstrap_proof",
+              "other"
+            ]
+          },
+          "expected_proof_rigor": {
+            "type": "string",
+            "enum": [
+              "smoke",
+              "strict"
+            ]
+          },
+          "pass_criterion": {
+            "type": "string",
+            "minLength": 1
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "fail",
+              "missing"
+            ]
+          },
+          "evidence_scope_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "cited_evidence_paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "blocking_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "result": {
+                  "const": "missing"
+                }
+              },
+              "required": [
+                "result"
+              ]
+            },
+            "then": {
+              "properties": {
+                "evidence_scope_ids": {
+                  "maxItems": 0
+                },
+                "cited_evidence_paths": {
+                  "maxItems": 0
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "result": {
+                  "enum": [
+                    "pass",
+                    "fail"
+                  ]
+                }
+              },
+              "required": [
+                "result"
+              ]
+            },
+            "then": {
+              "properties": {
+                "evidence_scope_ids": {
+                  "minItems": 1
+                },
+                "cited_evidence_paths": {
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "acceptance_readback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_path",
+        "graph_path",
+        "dossier_path",
+        "human_review_record_path",
+        "experience_review_required",
+        "experience_review_gates_acceptance",
+        "experience_review_gating_verdict",
+        "tech_lead_review_required",
+        "tech_lead_review_gates_acceptance",
+        "tech_lead_review_gating_verdict",
+        "tech_lead_understanding_status"
+      ],
+      "properties": {
+        "decision_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "graph_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dossier_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "human_review_record_path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "experience_review_required": {
+          "type": "boolean"
+        },
+        "experience_review_gates_acceptance": {
+          "type": "boolean"
+        },
+        "experience_review_gating_verdict": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "pass",
+            "fail",
+            "more_checks",
+            "hold"
+          ]
+        },
+        "tech_lead_review_required": {
+          "type": "boolean"
+        },
+        "tech_lead_review_gates_acceptance": {
+          "type": "boolean"
+        },
+        "tech_lead_review_gating_verdict": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "pass",
+            "fail",
+            "more_checks",
+            "hold"
+          ]
+        },
+        "tech_lead_understanding_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "clear",
+            "partial",
+            "blocked",
+            "needs_follow_up"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "experience_review_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "experience_review_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "human_review_record_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "experience_review_gates_acceptance": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "experience_review_gates_acceptance": {
+                "const": true
+              }
+            },
+            "required": [
+              "experience_review_gates_acceptance"
+            ]
+          },
+          "then": {
+            "properties": {
+              "experience_review_required": {
+                "const": true
+              },
+              "experience_review_gating_verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "more_checks",
+                  "hold"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "experience_review_required": {
+                "const": false
+              }
+            },
+            "required": [
+              "experience_review_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "experience_review_gates_acceptance": {
+                "const": false
+              },
+              "experience_review_gating_verdict": {
+                "const": null
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tech_lead_review_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "tech_lead_review_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "human_review_record_path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "tech_lead_understanding_status": {
+                "type": "string",
+                "enum": [
+                  "clear",
+                  "partial",
+                  "blocked",
+                  "needs_follow_up"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tech_lead_review_gates_acceptance": {
+                "const": true
+              }
+            },
+            "required": [
+              "tech_lead_review_gates_acceptance"
+            ]
+          },
+          "then": {
+            "properties": {
+              "tech_lead_review_required": {
+                "const": true
+              },
+              "tech_lead_review_gating_verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "fail",
+                  "more_checks",
+                  "hold"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tech_lead_review_required": {
+                "const": false
+              }
+            },
+            "required": [
+              "tech_lead_review_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "tech_lead_review_gates_acceptance": {
+                "const": false
+              },
+              "tech_lead_review_gating_verdict": {
+                "const": null
+              },
+              "tech_lead_understanding_status": {
+                "const": null
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "experience_review_required": {
+                "const": false
+              },
+              "tech_lead_review_required": {
+                "const": false
+              }
+            },
+            "required": [
+              "experience_review_required",
+              "tech_lead_review_required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "human_review_record_path": {
+                "const": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    "forbidden_simplification_breaches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "breach_type",
+          "summary"
+        ],
+        "properties": {
+          "breach_type": {
+            "type": "string",
+            "enum": [
+              "behavior_as_structure",
+              "acceptance_gap_relabelled_as_risk",
+              "unapproved_route_downgrade",
+              "hidden_dispatch_fallback",
+              "other"
+            ]
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_scope_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "temporary_mutations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "location",
+          "persisted_into_project",
+          "cleaned"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "acceptance_scaffold",
+              "mcp_bootstrap",
+              "editor_plugin_sync",
+              "runtime_probe",
+              "other"
+            ]
+          },
+          "location": {
+            "type": "string",
+            "minLength": 1
+          },
+          "persisted_into_project": {
+            "type": "boolean"
+          },
+          "cleaned": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "first_blocker": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "craft",
+              "execution",
+              "proof",
+              "review"
+            ]
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "completion_quality",
+          "task_identity",
+          "dispatch_audit",
+          "acceptance_inputs_checked",
+          "covered_scope_ids",
+          "forbidden_simplification_breaches",
+          "findings"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "acceptance"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "completion_quality",
+          "covered_scope_ids",
+          "checklist_results",
+          "acceptance_readback",
+          "forbidden_simplification_breaches",
+          "findings"
+        ],
+        "properties": {
+          "scope_id": {
+            "const": "module-acceptance"
+          },
+          "proofs": {
+            "minItems": 1
+          },
+          "covered_scope_ids": {
+            "minItems": 1
+          },
+          "checklist_results": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

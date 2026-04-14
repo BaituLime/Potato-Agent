@@ -1,0 +1,522 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/run-packet.schema.json",
+  "title": "Godot-RUP Run Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_format",
+    "run_id",
+    "module_id",
+    "graph_revision_id",
+    "scope_id",
+    "scope_kind",
+    "graph_kind",
+    "branch",
+    "slot",
+    "checkout",
+    "layer_id",
+    "depends_on",
+    "source_realization_ids",
+    "blueprint_excerpt",
+    "goal",
+    "must_read",
+    "likely_read",
+    "files_expected_to_change",
+    "ownership_boundary",
+    "must_preserve",
+    "forbidden_actions",
+    "acceptance_inputs",
+    "checks_required",
+    "resources_required",
+    "model_tier",
+    "reasoningEffort",
+    "resolved_subagent_type",
+    "resolved_model",
+    "resolved_reasoningEffort",
+    "producer_command",
+    "dispatch_verification_required",
+    "context_escape_rule",
+    "role_contract",
+    "recent_execution_learnings"
+  ],
+  "properties": {
+    "packet_format": {
+      "type": "string",
+      "const": "godot_run_packet/v2"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "graph_revision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Exact approved graph revision that this packet was compiled from."
+    },
+    "scope_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope_kind": {
+      "type": "string",
+      "enum": [
+        "task",
+        "craft",
+        "proof",
+        "review"
+      ],
+      "description": "Runtime scope discriminator; producer selection uses this plus prompt templates, not as a model-selection knob."
+    },
+    "graph_kind": {
+      "type": "string",
+      "enum": [
+        "craft",
+        "execution",
+        "proof",
+        "review"
+      ]
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "slot": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checkout": {
+      "type": "string",
+      "minLength": 1
+    },
+    "layer_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source_realization_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Approved execution-blueprint realization ids whose preplayed implementation details are projected into this packet."
+    },
+    "blueprint_excerpt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blueprint_revision_id",
+        "source_markdown_path",
+        "source_line_offset",
+        "source_line_length",
+        "realization_ids",
+        "summary",
+        "why_this_is_a_realization",
+        "primary_flow",
+        "alternate_flows",
+        "failure_flows",
+        "critical_details",
+        "authority_map",
+        "must_hold_invariants",
+        "parallel_reason",
+        "convergence_contract",
+        "forbidden_shortcuts",
+        "success_signals",
+        "tripwires",
+        "deferred_work_guardrails"
+      ],
+      "properties": {
+        "blueprint_revision_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_markdown_path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Absolute handoff-root path to the exact blueprint markdown revision file that the excerpt was cut from. Prefer the immutable blueprint-history revision file over a mutable latest alias."
+        },
+        "source_line_offset": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "1-indexed starting line for the authoritative blueprint slice relevant to this packet."
+        },
+        "source_line_length": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of lines in the authoritative blueprint slice relevant to this packet."
+        },
+        "realization_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "why_this_is_a_realization": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primary_flow": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "alternate_flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "alt_id",
+              "trigger",
+              "handling",
+              "reason"
+            ],
+            "properties": {
+              "alt_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trigger": {
+                "type": "string",
+                "minLength": 1
+              },
+              "handling": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "failure_flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "failure_id",
+              "trigger",
+              "required_response",
+              "anti_fake_check"
+            ],
+            "properties": {
+              "failure_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trigger": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required_response": {
+                "type": "string",
+                "minLength": 1
+              },
+              "anti_fake_check": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "critical_details": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "authority_map": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "must_hold_invariants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "parallel_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "convergence_contract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "forbidden_shortcuts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "success_signals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "tripwires": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "deferred_work_guardrails": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "must_read": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "likely_read": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "files_expected_to_change": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "ownership_boundary": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "must_preserve": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "acceptance_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input_id",
+          "description",
+          "required_proof_type",
+          "proof_rigor",
+          "exactness_required"
+        ],
+        "properties": {
+          "input_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required_proof_type": {
+            "type": "string",
+            "enum": [
+              "compile",
+              "headless",
+              "snapshot_round_trip",
+              "scene_structure_proof",
+              "behavior_proof",
+              "code_inspection",
+              "data_migration_proof",
+              "dispatch_audit",
+              "resource_bootstrap_proof",
+              "other"
+            ]
+          },
+          "proof_rigor": {
+            "type": "string",
+            "enum": [
+              "smoke",
+              "strict"
+            ],
+            "description": "Evidence strength. smoke = sanity only; strict = full required rigor for the claim."
+          },
+          "exactness_required": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "partial_disallowed"
+            ]
+          }
+        }
+      }
+    },
+    "checks_required": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "resources_required": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "model_tier": {
+      "type": "string",
+      "enum": [
+        "full",
+        "mini"
+      ],
+      "description": "First half of the approved joint dispatch pair."
+    },
+    "reasoningEffort": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high",
+        "xhigh"
+      ],
+      "description": "Second half of the approved joint dispatch pair."
+    },
+    "resolved_subagent_type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Concrete child-agent id resolved from the joint dispatch pair."
+    },
+    "resolved_model": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resolved_reasoningEffort": {
+      "type": "string",
+      "enum": [
+        "medium",
+        "high",
+        "xhigh"
+      ],
+      "description": "Actual reasoning effort of the resolved child profile after any explicit normalization."
+    },
+    "producer_command": {
+      "type": "string",
+      "enum": [
+        "godot-rup-task",
+        "godot-rup-craft",
+        "godot-rup-proof",
+        "godot-rup-review"
+      ]
+    },
+    "dispatch_verification_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "context_escape_rule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary_role",
+        "success_shape",
+        "handoff_back_when",
+        "must_not_do"
+      ],
+      "properties": {
+        "primary_role": {
+          "type": "string",
+          "enum": [
+            "task",
+            "craft",
+            "proof",
+            "review"
+          ]
+        },
+        "success_shape": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handoff_back_when": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "must_not_do": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "recent_execution_learnings": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/slot-demand.schema.json",
+  "title": "Godot-RUP Slot Demand",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slot_demand_format",
+    "run_id",
+    "worker_slots_required_peak",
+    "integration_slots_required",
+    "derived_from_epoch_ids",
+    "notes",
+    "calculation_policy"
+  ],
+  "properties": {
+    "slot_demand_format": {
+      "type": "string",
+      "const": "godot_slot_demand/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worker_slots_required_peak": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "integration_slots_required": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "derived_from_epoch_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "calculation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "peak_worker_definition",
+        "total_slot_definition"
+      ],
+      "properties": {
+        "peak_worker_definition": {
+          "type": "string",
+          "const": "max admitted writer tasks over all woven epochs"
+        },
+        "total_slot_definition": {
+          "type": "string",
+          "const": "peak worker slots plus one fixed integration slot per active module"
+        }
+      }
+    }
+  }
+}

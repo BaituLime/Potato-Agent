@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    [
+      "./plugins/godot-rup-continuation/index.js",
+      {
+        "stateRoot": "./state/godot-rup-continuation",
+        "recoveryWindowMs": 5000,
+        "reinjectionCooldownMs": 5000,
+        "maxSameStateInjections": 3
+      }
+    ]
+  ]
+  }
+}

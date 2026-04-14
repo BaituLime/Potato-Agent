@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/slot-table.schema.json",
+  "title": "Godot-RUP Slot Table",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "slot_table_format",
+    "run_id",
+    "integration_slots",
+    "worker_slots",
+    "last_updated_at"
+  ],
+  "properties": {
+    "slot_table_format": {
+      "type": "string",
+      "const": "godot_slot_table/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integration_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slot_id",
+          "module_id",
+          "checkout",
+          "branch",
+          "status",
+          "occupied_by_scope_id",
+          "last_commit"
+        ],
+        "properties": {
+          "slot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "module_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "checkout": {
+            "type": "string",
+            "minLength": 1
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "provisioned",
+              "busy",
+              "dirty",
+              "recycling",
+              "cleaned"
+            ]
+          },
+          "occupied_by_scope_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_commit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "worker_slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slot_id",
+          "checkout",
+          "status",
+          "assigned_module_id",
+          "assigned_scope_id",
+          "branch"
+        ],
+        "properties": {
+          "slot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "checkout": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "free",
+              "busy",
+              "dirty",
+              "recycling"
+            ]
+          },
+          "assigned_module_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assigned_scope_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "last_updated_at": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

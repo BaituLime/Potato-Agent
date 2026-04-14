@@ -1,0 +1,556 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/decision-handoff.schema.json",
+  "title": "Godot-RUP Decision Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "module_id",
+    "goal",
+    "in_scope",
+    "out_of_scope",
+    "approved_route",
+    "interfaces",
+    "coding_constraints",
+    "must_preserve",
+    "forbidden_simplifications",
+    "final_acceptance_expectations",
+    "acceptance_plan",
+    "workflow_steps",
+    "decision_gates",
+    "approved_at"
+  ],
+  "properties": {
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "use_case_design_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_use_case_design_revision_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "in_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "route_options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "summary",
+          "pros",
+          "cons",
+          "risks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pros": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "cons": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "approved_route": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decision_rationale": {
+      "type": "string"
+    },
+    "interfaces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "coding_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "must_preserve": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "forbidden_simplifications": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "final_acceptance_expectations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "acceptance_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy",
+        "final_verdict_is_atomic_task",
+        "required_checks",
+        "required_resources",
+        "required_evidence",
+        "human_review_plan"
+      ],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_verdict_is_atomic_task": {
+          "type": "boolean"
+        },
+        "required_checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidence_id",
+              "description",
+              "required_proof_type",
+              "proof_rigor",
+              "pass_criterion"
+            ],
+            "properties": {
+              "evidence_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required_proof_type": {
+                "type": "string",
+                "enum": [
+                  "compile",
+                  "headless",
+                  "snapshot_round_trip",
+                  "scene_structure_proof",
+                  "behavior_proof",
+                  "code_inspection",
+                  "data_migration_proof",
+                  "dispatch_audit",
+                  "resource_bootstrap_proof",
+                  "other"
+                ]
+              },
+              "proof_rigor": {
+                "type": "string",
+                "enum": [
+                  "smoke",
+                  "strict"
+                ],
+                "description": "Evidence strength. smoke = sanity only; strict = full required rigor for the claim."
+              },
+              "pass_criterion": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "human_review_plan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "experience_review",
+            "tech_lead_review",
+            "notes"
+          ],
+          "properties": {
+            "experience_review": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "required",
+                "gates_acceptance",
+                "focus_points"
+              ],
+              "properties": {
+                "required": {
+                  "type": "boolean"
+                },
+                "gates_acceptance": {
+                  "type": "boolean"
+                },
+                "focus_points": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "gates_acceptance": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "gates_acceptance"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "required": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "tech_lead_review": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "required",
+                "gates_acceptance",
+                "focus_points",
+                "godot_learning_goals"
+              ],
+              "properties": {
+                "required": {
+                  "type": "boolean"
+                },
+                "gates_acceptance": {
+                  "type": "boolean"
+                },
+                "focus_points": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "godot_learning_goals": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "gates_acceptance": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "gates_acceptance"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "required": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "notes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "repair_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "same_route_only",
+        "preserve_acceptance_bar",
+        "preserve_proof_rigor",
+        "allow_graph_delta_only",
+        "allow_blueprint_plus_graph_delta",
+        "max_same_route_delta_per_run"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "manual_only",
+            "same_route_delegated_delta"
+          ]
+        },
+        "same_route_only": {
+          "type": "boolean"
+        },
+        "preserve_acceptance_bar": {
+          "type": "boolean"
+        },
+        "preserve_proof_rigor": {
+          "type": "boolean"
+        },
+        "allow_graph_delta_only": {
+          "type": "boolean"
+        },
+        "allow_blueprint_plus_graph_delta": {
+          "type": "boolean"
+        },
+        "max_same_route_delta_per_run": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Bound on lawful same-route delegated delta attempts across one uninterrupted unattended route lineage. Fresh successor runs after delta do not reset it."
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "manual_only"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "allow_graph_delta_only": {
+                "const": false
+              },
+              "allow_blueprint_plus_graph_delta": {
+                "const": false
+              },
+              "max_same_route_delta_per_run": {
+                "const": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "same_route_delegated_delta"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "same_route_only": {
+                "const": true
+              },
+              "preserve_acceptance_bar": {
+                "const": true
+              },
+              "preserve_proof_rigor": {
+                "const": true
+              },
+              "max_same_route_delta_per_run": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "anyOf": [
+              {
+                "properties": {
+                  "allow_graph_delta_only": {
+                    "const": true
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "allow_blueprint_plus_graph_delta": {
+                    "const": true
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Optional repair policy. When absent, runtime defaults to manual_only. same_route_delegated_delta allows runner-owned admission into lawful same-route delegated delta planning only after a real replan_needed stop."
+    },
+    "co_layer_exclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module_shape",
+          "reason"
+        ],
+        "properties": {
+          "module_shape": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "workflow_steps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "decision_gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "pending",
+              "rejected"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "open_risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "prototype_required": {
+      "type": "boolean"
+    },
+    "prototype_targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "approved_at": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

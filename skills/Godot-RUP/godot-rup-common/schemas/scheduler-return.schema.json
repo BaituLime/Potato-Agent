@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/scheduler-return.schema.json",
+  "title": "Godot-RUP Scheduler Return Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scheduler_return_format",
+    "run_id",
+    "recorded_phase",
+    "recorded_yield_reason",
+    "recorded_stop_reason",
+    "protocol_ok",
+    "return_allowed",
+    "next_action",
+    "written_at"
+  ],
+  "properties": {
+    "scheduler_return_format": {
+      "type": "string",
+      "const": "godot_scheduler_return/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recorded_phase": {
+      "type": "string",
+      "enum": [
+        "composing_runtime_dag",
+        "allocating_worktrees",
+        "orchestrating",
+        "acceptance",
+        "stopped"
+      ]
+    },
+    "recorded_yield_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "dispatch_refresh_needed"
+      ]
+    },
+    "recorded_stop_reason": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "manual_needed",
+        "replan_needed",
+        "ready_for_acceptance",
+        "global_blocked",
+        "all_done"
+      ]
+    },
+    "protocol_ok": {
+      "type": "boolean"
+    },
+    "return_allowed": {
+      "type": "boolean",
+      "description": "Whether the runner shell is currently allowed to surface a user-facing stop reply."
+    },
+    "next_action": {
+      "type": "string",
+      "enum": [
+        "relaunch_orchestrate_runtime",
+        "surface_stop_to_user",
+        "fail_closed_protocol_blocker"
+      ],
+      "description": "The only legal post-scheduler runner-shell action."
+    },
+    "written_at": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "protocol_ok": {
+            "const": true
+          },
+          "return_allowed": {
+            "const": true
+          }
+        },
+        "required": [
+          "protocol_ok",
+          "return_allowed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "recorded_phase": {
+            "const": "stopped"
+          },
+          "recorded_yield_reason": {
+            "const": null
+          },
+          "recorded_stop_reason": {
+            "type": "string"
+          },
+          "next_action": {
+            "const": "surface_stop_to_user"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "protocol_ok": {
+            "const": true
+          },
+          "return_allowed": {
+            "const": false
+          }
+        },
+        "required": [
+          "protocol_ok",
+          "return_allowed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "recorded_phase": {
+            "const": "orchestrating"
+          },
+          "recorded_yield_reason": {
+            "const": "dispatch_refresh_needed"
+          },
+          "recorded_stop_reason": {
+            "const": null
+          },
+          "next_action": {
+            "const": "relaunch_orchestrate_runtime"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "protocol_ok": {
+            "const": false
+          }
+        },
+        "required": [
+          "protocol_ok"
+        ]
+      },
+      "then": {
+        "properties": {
+          "return_allowed": {
+            "const": false
+          },
+          "next_action": {
+            "enum": [
+              "relaunch_orchestrate_runtime",
+              "fail_closed_protocol_blocker"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

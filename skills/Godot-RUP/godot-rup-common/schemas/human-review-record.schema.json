@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/human-review-record.schema.json",
+  "title": "Godot-RUP Human Review Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "human_review_record_format",
+    "run_id",
+    "module_id",
+    "brief_path",
+    "experience_review",
+    "tech_lead_review",
+    "notes"
+  ],
+  "properties": {
+    "human_review_record_format": {
+      "type": "string",
+      "const": "godot_human_review_record/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "brief_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experience_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "gates_acceptance",
+        "performed",
+        "gating_verdict",
+        "checked_items",
+        "operator_notes",
+        "follow_up_actions"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "gates_acceptance": {
+          "type": "boolean"
+        },
+        "performed": {
+          "type": "boolean"
+        },
+        "gating_verdict": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "pass",
+            "fail",
+            "more_checks",
+            "hold"
+          ]
+        },
+        "checked_items": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "operator_notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "follow_up_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "gates_acceptance": {
+                "const": true
+              }
+            },
+            "required": [
+              "gates_acceptance"
+            ]
+          },
+          "then": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "performed": {
+                "const": false
+              }
+            },
+            "required": [
+              "performed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gating_verdict": {
+                "const": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    "tech_lead_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "gates_acceptance",
+        "performed",
+        "gating_verdict",
+        "understanding_status",
+        "learned_topics",
+        "remaining_questions",
+        "operator_notes",
+        "follow_up_actions"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "gates_acceptance": {
+          "type": "boolean"
+        },
+        "performed": {
+          "type": "boolean"
+        },
+        "gating_verdict": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "pass",
+            "fail",
+            "more_checks",
+            "hold"
+          ]
+        },
+        "understanding_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "clear",
+            "partial",
+            "blocked",
+            "needs_follow_up"
+          ]
+        },
+        "learned_topics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "remaining_questions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "operator_notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "follow_up_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "gates_acceptance": {
+                "const": true
+              }
+            },
+            "required": [
+              "gates_acceptance"
+            ]
+          },
+          "then": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "performed": {
+                "const": false
+              }
+            },
+            "required": [
+              "performed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gating_verdict": {
+                "const": null
+              },
+              "understanding_status": {
+                "const": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

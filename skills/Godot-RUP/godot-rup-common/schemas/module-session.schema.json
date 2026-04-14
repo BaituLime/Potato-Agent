@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/module-session.schema.json",
+  "title": "Godot-RUP Module Session State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "module_session_format",
+    "run_id",
+    "module_id",
+    "graph_revision_id",
+    "integration_checkout",
+    "integration_branch",
+    "status",
+    "active_layer_ids",
+    "admitted_scope_ids",
+    "settled_scope_ids",
+    "pending_review_scope_ids",
+    "pending_integration_layer_ids",
+    "current_epoch_id",
+    "ready_for_acceptance",
+    "last_integration_commit",
+    "delta_attempt_count",
+    "last_delta_result_class",
+    "last_delta_trigger_summary",
+    "last_delta_from_graph_revision_id",
+    "last_delta_to_graph_revision_id",
+    "last_delta_from_blueprint_revision_id",
+    "last_delta_to_blueprint_revision_id",
+    "delta_history_refs",
+    "open_blockers",
+    "notes"
+  ],
+  "properties": {
+    "module_session_format": {
+      "type": "string",
+      "const": "godot_module_session/v3"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "graph_revision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current approved graph revision being executed for this module in this run."
+    },
+    "integration_checkout": {
+      "type": "string",
+      "minLength": 1
+    },
+    "integration_branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "waiting_for_review",
+        "waiting_for_integration",
+        "manual_needed",
+        "ready_for_acceptance",
+        "accepted",
+        "blocked",
+        "replan_needed",
+        "done"
+      ]
+    },
+    "active_layer_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "admitted_scope_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "settled_scope_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "pending_review_scope_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "pending_integration_layer_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "current_epoch_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ready_for_acceptance": {
+      "type": "boolean"
+    },
+    "last_integration_commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_mainline_commit": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "delta_attempt_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Count of lawful same-route delegated delta attempts already consumed in this module's uninterrupted unattended route lineage."
+    },
+    "last_delta_result_class": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "graph_delta_only",
+        "blueprint_plus_graph_delta",
+        "escalate_visible_replanning"
+      ]
+    },
+    "last_delta_trigger_summary": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_delta_from_graph_revision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_delta_to_graph_revision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_delta_from_blueprint_revision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_delta_to_blueprint_revision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "delta_history_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Carried lineage references, typically including predecessor stopped module-session paths, that let successor fresh runs reread prior same-route delta history instead of resetting it."
+    },
+    "recent_execution_learnings": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "open_blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "done"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "last_mainline_commit"
+        ],
+        "properties": {
+          "last_mainline_commit": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,540 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/graph-handoff.schema.json",
+  "title": "Godot-RUP Graph Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "module_id",
+    "graph_revision_id",
+    "supersedes_graph_revision_id",
+    "branch",
+    "source_blueprint_revision_id",
+    "red_topo_layer_count",
+    "black_topo_layer_count",
+    "parallelism_hints",
+    "module_acceptance",
+    "red_topo_layers",
+    "black_topo_layers",
+    "tasks"
+  ],
+  "properties": {
+    "module_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "graph_revision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Immutable approved graph revision id for this DAG snapshot."
+    },
+    "supersedes_graph_revision_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Prior approved graph revision superseded by this snapshot, or null for the first revision."
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_blueprint_revision_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Approved execution-blueprint revision containing the implementation preplay this DAG was compiled from. Current-format graphs must record it."
+    },
+    "red_topo_layer_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "black_topo_layer_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "parallelism_hints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "independent_write_groups",
+        "recommended_concurrency_ceiling"
+      ],
+      "properties": {
+        "independent_write_groups": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "recommended_concurrency_ceiling": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "module_acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy",
+        "final_verdict_is_atomic_task",
+        "supporting_task_ids",
+        "required_checks",
+        "required_resources",
+        "required_evidence"
+      ],
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "final_verdict_is_atomic_task": {
+          "type": "boolean"
+        },
+        "supporting_task_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_resources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidence_id",
+              "description",
+              "required_proof_type",
+              "proof_rigor",
+              "pass_criterion"
+            ],
+            "properties": {
+              "evidence_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required_proof_type": {
+                "type": "string",
+                "enum": [
+                  "compile",
+                  "headless",
+                  "snapshot_round_trip",
+                  "scene_structure_proof",
+                  "behavior_proof",
+                  "code_inspection",
+                  "data_migration_proof",
+                  "dispatch_audit",
+                  "resource_bootstrap_proof",
+                  "other"
+                ]
+              },
+              "proof_rigor": {
+                "type": "string",
+                "enum": [
+                  "smoke",
+                  "strict"
+                ],
+                "description": "Evidence strength. smoke = sanity only; strict = full required rigor for the claim."
+              },
+              "pass_criterion": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "repair_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "same_route_only",
+        "preserve_acceptance_bar",
+        "preserve_proof_rigor",
+        "allow_graph_delta_only",
+        "allow_blueprint_plus_graph_delta",
+        "max_same_route_delta_per_run"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "manual_only",
+            "same_route_delegated_delta"
+          ]
+        },
+        "same_route_only": {
+          "type": "boolean"
+        },
+        "preserve_acceptance_bar": {
+          "type": "boolean"
+        },
+        "preserve_proof_rigor": {
+          "type": "boolean"
+        },
+        "allow_graph_delta_only": {
+          "type": "boolean"
+        },
+        "allow_blueprint_plus_graph_delta": {
+          "type": "boolean"
+        },
+        "max_same_route_delta_per_run": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Bound on lawful same-route delegated delta attempts across one uninterrupted unattended route lineage. Fresh successor runs after delta do not reset it."
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "manual_only"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "allow_graph_delta_only": {
+                "const": false
+              },
+              "allow_blueprint_plus_graph_delta": {
+                "const": false
+              },
+              "max_same_route_delta_per_run": {
+                "const": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "same_route_delegated_delta"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "same_route_only": {
+                "const": true
+              },
+              "preserve_acceptance_bar": {
+                "const": true
+              },
+              "preserve_proof_rigor": {
+                "const": true
+              },
+              "max_same_route_delta_per_run": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "anyOf": [
+              {
+                "properties": {
+                  "allow_graph_delta_only": {
+                    "const": true
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "allow_blueprint_plus_graph_delta": {
+                    "const": true
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Optional carried repair policy copied from planning truth. When absent, runtime behavior defaults to manual_only. same_route_delegated_delta allows runner-owned admission into lawful same-route delegated delta planning only after a real replan_needed stop."
+    },
+    "red_topo_layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "atomic_tasks",
+          "selected_review_targets",
+          "next_black_topo_layers",
+          "commit_after_pass"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "atomic_tasks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "selected_review_targets": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "next_black_topo_layers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "commit_after_pass": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "black_topo_layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "derived_from_red_topo_layer",
+          "review_atomic_tasks",
+          "depends_on_red_topo_layers"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "derived_from_red_topo_layer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "review_atomic_tasks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "depends_on_red_topo_layers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "depends_on",
+          "topo_layer",
+          "source_realization_ids",
+          "model_tier",
+          "reasoningEffort",
+          "acceptance_inputs",
+          "checks_required",
+          "resources_required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": ".*[a-zA-Z].*"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "craft",
+              "execution",
+              "proof",
+              "review"
+            ],
+            "description": "Semantic task-role metadata only; not part of the dispatch pair."
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "topo_layer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "review_of": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_realization_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Approved execution-blueprint realization ids whose preplayed implementation details this task compiles. Current-format graphs must record them."
+          },
+          "model_tier": {
+            "type": "string",
+            "enum": [
+              "full",
+              "mini"
+            ],
+            "description": "First half of the required joint dispatch pair; choose together with reasoningEffort."
+          },
+          "reasoningEffort": {
+            "type": "string",
+            "enum": [
+              "medium",
+              "high",
+              "xhigh"
+            ],
+            "description": "Second half of the required joint dispatch pair; may not be omitted or replaced by kind."
+          },
+          "ownership_boundary": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "must_read": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "likely_read": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "acceptance_inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "input_id",
+                "description",
+                "required_proof_type",
+                "proof_rigor",
+                "exactness_required"
+              ],
+              "properties": {
+                "input_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "required_proof_type": {
+                  "type": "string",
+                  "enum": [
+                    "compile",
+                    "headless",
+                    "snapshot_round_trip",
+                    "scene_structure_proof",
+                    "behavior_proof",
+                    "code_inspection",
+                    "data_migration_proof",
+                    "dispatch_audit",
+                    "resource_bootstrap_proof",
+                    "other"
+                  ]
+                },
+                "proof_rigor": {
+                  "type": "string",
+                  "enum": [
+                    "smoke",
+                    "strict"
+                  ],
+                  "description": "Evidence strength. smoke = sanity only; strict = full required rigor for the claim."
+                },
+                "exactness_required": {
+                  "type": "string",
+                  "enum": [
+                    "exact",
+                    "partial_disallowed"
+                  ]
+                }
+              }
+            }
+          },
+          "checks_required": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "resources_required": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

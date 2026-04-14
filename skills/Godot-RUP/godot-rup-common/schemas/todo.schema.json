@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "godot/todo.schema.json",
+  "title": "Godot-RUP Runtime Todo List",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "todo_format",
+    "run_id",
+    "items"
+  ],
+  "properties": {
+    "todo_format": {
+      "type": "string",
+      "const": "godot_runtime_todo/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "epoch_id",
+          "combined_layer_ids",
+          "scope_ids",
+          "module_ids",
+          "status"
+        ],
+        "properties": {
+          "epoch_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "combined_layer_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "scope_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": ".+::.+"
+            },
+            "minItems": 1
+          },
+          "module_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active",
+              "settled",
+              "integrated",
+              "blocked"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
