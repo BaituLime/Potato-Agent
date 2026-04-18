@@ -1,3 +1,4 @@
+20260418：之前只是听说OMO很好用，但是我自己用了发现，烧了巨量Token生成了一坨，Token损耗是递增的，纠偏计划消耗更多Token能做的也有限，那么还是回到我这一套上来。
 # Godot-RUP
 An archived experiment in building a highly planned OpenCode workflow for migrating Unity game systems into Godot, one module at a time.
 说白了我就是在Github找个坑给埋了，我已经把这个流程打磨的挺不错、好使了，可惜我发现了OMO，它更好使。既然知道是在造轮子，就不能继续偏执地造轮子，不过我这套经过一个多月的打磨，已经好使了，它至少可以做到职责分离、计划细节控制、流程细节预设计、上下文切分、MVP切割并行、多Module拼层、有限自动审核修复，挺可惜的。
